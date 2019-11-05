@@ -1,38 +1,48 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8">
     <title>Leaflet Map</title>
     <link rel="stylesheet" href="css/leaflet.css">
     <style>
-      #mapid { height: 100vh; }
+        #mapid { height: 100vh; }
     </style>
 </head>
+
 <body>
+    <div id="mapid"></div>
+    <script src="js/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript">
+    var mymap = L.map('mapid').setView([37.809405, -122.252402], 12);
 
-<div id="mapid"></div>
-
-<script src="js/leaflet.js"></script>
-<script type="text/javascript">
-
-
-  var mymap = L.map('mapid').setView([51.505, -0.09], 13);
-
-  var CartoDB_Positron = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-  subdomains: 'abcd',
-  maxZoom: 19
-  }).addTo(mymap);
+    var CartoDB_Positron = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        subdomains: 'abcd',
+        maxZoom: 19
+    }).addTo(mymap);
 
 
-  var circle = L.circle([51.508, -0.11], {
-    color: 'red',
-    fillColor: '#f03',
-    fillOpacity: 0.5,
-    radius: 500
-  }).addTo(mymap);
 
 
-</script>
+    $.ajax({
+        url: "oakland-bikeway-projects.geojson",
+        dataType: "json"
+    }).done(function(data) {
+
+      console.log(data);
+
+        L.geoJSON(data, {
+            style: function(feature) {
+                return { color: "steelblue" };
+            }
+        }).bindPopup(function(layer) {
+            return layer.feature.properties.street;
+        }).addTo(mymap);
+
+    });
+    </script>
 </body>
+
 </html>
